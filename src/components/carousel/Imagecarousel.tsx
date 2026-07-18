@@ -3,7 +3,6 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import ArtQuoteOverlay from '../artquoteoverlay/Artquoteoverlay'
 import './Imagecarousel.css';
 
-// Dynamically import every image named "image-component-{number}.*" in src/assets.
 const imageModules = import.meta.glob('/src/assets/image-component-*.{png,jpg,jpeg,svg,webp,gif}', {
   eager: true,
   import: 'default',
