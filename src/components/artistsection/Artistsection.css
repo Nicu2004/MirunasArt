@@ -1,0 +1,146 @@
+/* ArtistSection.css
+   Folosește aceiași tokeni ca restul MirunaArt (charcoal/ivory/brass-gold,
+   Cormorant Garamond + Inter). Dacă ai deja variabile CSS globale definite
+   (ex: în index.css / :root), înlocuiește valorile hardcodate de mai jos
+   cu var(--charcoal), var(--ivory), var(--brass-gold) etc. — le-am scris
+   explicit aici doar ca să fie clar ce e ce, în caz că nu se suprapun exact
+   cu numele tale de variabile. */
+
+.artist-section {
+  --charcoal: #2b2b29;
+  --ivory: #f5f1e8;
+  --brass-gold: #b08d57;
+  --muted: #6b6b63;
+  --text-body: #3a3a36;
+
+  background-color: var(--ivory);
+  padding: 6rem 1.5rem;
+}
+
+.artist-section__inner {
+  max-width: 72rem;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 280px) 1fr;
+  gap: 4rem;
+  align-items: start;
+}
+
+@media (max-width: 768px) {
+  .artist-section__inner {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+}
+
+/* --- Portret --- */
+
+.artist-section__portrait-wrap {
+  position: relative;
+}
+
+.artist-section__portrait {
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background-color: var(--charcoal);
+}
+
+.artist-section__portrait img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: grayscale(15%);
+}
+
+/* colț "ramă" — ecou al motivului de rail auriu de pe restul site-ului */
+.artist-section__portrait-corner {
+  position: absolute;
+  bottom: -0.75rem;
+  right: -0.75rem;
+  width: 4rem;
+  height: 4rem;
+  border: 1px solid var(--brass-gold);
+  pointer-events: none;
+}
+
+/* --- Conținut --- */
+
+.artist-section__eyebrow {
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--brass-gold);
+  margin: 0 0 1rem;
+}
+
+.artist-section__name {
+  font-family: "Cormorant Garamond", serif;
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 500;
+  line-height: 1.1;
+  color: var(--charcoal);
+  margin: 0 0 0.5rem;
+}
+
+.artist-section__tagline {
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 0 0 2rem;
+}
+
+/* rail-ul auriu — element de semnătură reluat din restul site-ului */
+.artist-section__rail {
+  width: 3rem;
+  height: 1px;
+  background-color: var(--brass-gold);
+  margin: 0 0 2rem;
+}
+
+.artist-section__bio {
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 1.125rem;
+  line-height: 1.7;
+  color: var(--text-body);
+  max-width: 38rem;
+  margin: 0 0 2.5rem;
+}
+
+/* --- Social --- */
+
+.artist-section__social {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.artist-section__social-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 0.875rem;
+  letter-spacing: 0.03em;
+  color: var(--charcoal);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.artist-section__social-link:hover,
+.artist-section__social-link:focus-visible {
+  color: var(--brass-gold);
+}
+
+.artist-section__social-link:focus-visible {
+  outline: 2px solid var(--brass-gold);
+  outline-offset: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .artist-section__social-link {
+    transition: none;
+  }
+}
