@@ -16,15 +16,14 @@ interface Artist {
   social: SocialLink[];
 }
 
-// Completezi tu: nume, bio, link-uri social, poză.
 const artist: Artist = {
-  name: "Nume Artist",
-  tagline: "Pictor / Sculptor / etc.",
+  name: "Miruna Anton",
+  tagline: "Pictor ",
   bio: "Scurtă descriere a artistului — parcurs, stil, ce anume caracterizează lucrările. Două-trei propoziții sunt suficiente aici; detaliul aparține paginii individuale a fiecărei lucrări, nu acestei secțiuni.",
-  portraitUrl: "/images/artist-portrait.jpg", // înlocuiește cu poza reală
+  portraitUrl: "/images/artist-profile.jpg",
   social: [
     { label: "Instagram", href: "https://www.instagram.com/miruna.anton.art/", icon: InstagramIcon },
-    { label: "Facebook", href: "https://facebook.com/username", icon: FacebookIcon },
+    { label: "Facebook", href: "https://www.facebook.com/miruna.anton1", icon: FacebookIcon },
   ],
 };
 

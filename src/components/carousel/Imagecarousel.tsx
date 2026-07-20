@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import ArtQuoteOverlay from '../artquoteoverlay/Artquoteoverlay'
+import ScrollIndicator from '../scrollindicator/Scrollindicator'
 import './Imagecarousel.css';
 
 const imageModules = import.meta.glob('/src/assets/image-component-*.{png,jpg,jpeg,svg,webp,gif}', {
@@ -83,6 +84,7 @@ export default function ImageCarousel({ autoPlay = false, autoPlayInterval = 400
         </div>
 
         <ArtQuoteOverlay />
+        <ScrollIndicator/>
 
         <button
           className="carousel-btn carousel-btn-right"

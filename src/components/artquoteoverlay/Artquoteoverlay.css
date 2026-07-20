@@ -2,12 +2,14 @@
   position: absolute;
   left: 0;
   right: 0;
+  top: 0;
   bottom: 0;
   z-index: 20;
   display: flex;
-  align-items: flex-end;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
-  padding: 48px 32px 36px;
+  padding: 48px 32px 96px; 
   pointer-events: none;
 }
 
@@ -24,12 +26,12 @@
 
 .quote-text {
   position: relative;
-  max-width: 620px;
+  max-width: 720px;
   text-align: center;
   font-family: 'Cormorant Garamond', serif;
   font-style: italic;
   font-weight: 500;
-  font-size: 22px;
+  font-size: 34px;
   line-height: 1.45;
   color: #f3ede1;
   text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
@@ -43,13 +45,26 @@
   margin-left: 2px;
 }
 
+.quote-scroll-hint {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 24px;
+  display: flex;
+  justify-content: center;
+}
+
 @media (max-width: 640px) {
   .quote-overlay {
-    padding: 32px 20px 28px;
+    padding: 32px 20px 80px;
   }
 
   .quote-text {
-    font-size: 17px;
+    font-size: 24px;
     max-width: 90%;
+  }
+
+  .quote-scroll-hint {
+    bottom: 16px;
   }
 }

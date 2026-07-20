@@ -1,0 +1,82 @@
+.scroll-indicator {
+  /* self-poziționat, ca să poată fi pus direct ca sibling în
+     .carousel-wrapper (care e deja position: relative, dat fiind
+     că butoanele prev/next sunt poziționate absolut față de el) */
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 20px;
+  z-index: 21; /* peste .quote-scrim (20), ca să rămână vizibil */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  color: #f3ede1;
+  pointer-events: none;
+}
+
+.scroll-indicator__label {
+  font-family: "Inter", system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: #f3ede1;
+  opacity: 0.75;
+}
+
+/* cele două chevroane se suprapun aproape complet, ca să pară un singur
+   contur "curgând" în jos, nu două săgeți separate stivuite */
+.scroll-indicator__chevrons {
+  position: relative;
+  width: 38px;
+  height: 30px;
+}
+
+.scroll-indicator__chevron {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 38px;
+  height: 19px;
+  color: #c9a35c;
+  filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.45));
+}
+
+.scroll-indicator__chevron--1 {
+  animation: chevron-flow 1.8s ease-in-out infinite;
+}
+
+.scroll-indicator__chevron--2 {
+  animation: chevron-flow 1.8s ease-in-out infinite;
+  animation-delay: 0.3s;
+}
+
+@keyframes chevron-flow {
+  0% {
+    transform: translateY(-3px);
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+  70% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(15px);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-indicator__chevron--1,
+  .scroll-indicator__chevron--2 {
+    animation: none;
+    opacity: 0.85;
+  }
+
+  .scroll-indicator__chevron--2 {
+    transform: translateY(5px);
+  }
+}
