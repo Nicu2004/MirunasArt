@@ -15,7 +15,7 @@
   z-index: 100;
   -webkit-backdrop-filter: blur(16px) saturate(140%);
   backdrop-filter: blur(16px) saturate(140%);
-  
+
   background: var(--av-bg);
   border-bottom: 1px solid var(--av-border);
   transition: background 0.35s ease, border-color 0.35s ease;
@@ -112,6 +112,39 @@
   transform: scaleX(1);
 }
 
+/* Actions group (login + CTA) */
+
+.av-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+/* Login — ghost button, deliberately quieter than the CTA so it doesn't
+   compete with "Plan a Visit" as the primary action */
+.av-login {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.4px;
+  color: var(--av-ivory-dim);
+  text-decoration: none;
+  padding: 8px 14px;
+  border: 1px solid transparent;
+  border-radius: 2px;
+  white-space: nowrap;
+  transition: color 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+}
+
+.av-login:hover {
+  color: var(--av-ivory);
+  border-color: var(--av-border);
+  background: rgba(255, 255, 255, 0.04);
+}
+
 /* CTA */
 
 .av-cta {
@@ -156,7 +189,7 @@
 }
 
 .av-mobile-panel.av-open {
-  max-height: 420px;
+  max-height: 480px;
   border-bottom-color: rgba(201, 163, 92, 0.22);
 }
 
@@ -183,6 +216,20 @@
   color: var(--av-gold);
 }
 
+.av-mobile-login {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 4px 32px 0;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--av-border);
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  letter-spacing: 0.3px;
+  color: var(--av-ivory-dim);
+  text-decoration: none;
+}
+
 .av-mobile-cta {
   display: block;
   margin: 16px 32px 24px;
@@ -202,7 +249,7 @@
 
 @media (max-width: 860px) {
   .av-links,
-  .av-cta {
+  .av-actions {
     display: none;
   }
 
@@ -228,7 +275,8 @@
   .av-navbar,
   .av-rail,
   .av-mobile-panel,
-  .av-cta {
+  .av-cta,
+  .av-login {
     transition: none;
   }
 }

@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react';
 import './Exhibitions.css';
 
 type ExhibitionStatus = 'now' | 'upcoming' | 'past';
@@ -44,6 +45,34 @@ const STATUS_LABEL: Record<ExhibitionStatus, string> = {
   past: 'Past Exhibition',
 };
 
+// Sparks flickering off the spine at scattered points along its length —
+// fixed values (not Math.random()) so the layout is stable across renders
+// and doesn't shift on re-render.
+interface Ember {
+  top: string;
+  left: number; // px offset from the spine
+  size: number; // px
+  delay: number; // s
+  duration: number; // s
+}
+
+const EMBERS: Ember[] = [
+  { top: '3%', left: -3, size: 3, delay: 0, duration: 3.1 },
+  { top: '9%', left: 4, size: 2, delay: 0.9, duration: 2.6 },
+  { top: '16%', left: -5, size: 2.5, delay: 1.8, duration: 3.4 },
+  { top: '23%', left: 2, size: 3.5, delay: 0.3, duration: 2.9 },
+  { top: '31%', left: -2, size: 2, delay: 2.4, duration: 3.6 },
+  { top: '38%', left: 5, size: 3, delay: 1.1, duration: 2.7 },
+  { top: '46%', left: -4, size: 2.5, delay: 0.6, duration: 3.2 },
+  { top: '53%', left: 3, size: 2, delay: 2.9, duration: 2.8 },
+  { top: '61%', left: -3, size: 3.5, delay: 1.5, duration: 3.5 },
+  { top: '68%', left: 4, size: 2.5, delay: 0.2, duration: 3 },
+  { top: '76%', left: -5, size: 2, delay: 2.1, duration: 2.6 },
+  { top: '83%', left: 2, size: 3, delay: 1.3, duration: 3.3 },
+  { top: '90%', left: -2, size: 2.5, delay: 0.7, duration: 2.9 },
+  { top: '96%', left: 3, size: 2, delay: 2.6, duration: 3.1 },
+];
+
 export default function Exhibitions() {
   return (
     <section id="exhibitions" className="exh-section">
@@ -55,6 +84,25 @@ export default function Exhibitions() {
 
       <div className="exh-timeline">
         <div className="exh-spine" aria-hidden="true" />
+
+        <div className="exh-particles" aria-hidden="true">
+          {EMBERS.map((ember, i) => (
+            <span
+              key={i}
+              className="exh-particle"
+              style={
+                {
+                  top: ember.top,
+                  '--ember-left': `${ember.left}px`,
+                  width: ember.size,
+                  height: ember.size,
+                  animationDelay: `${ember.delay}s`,
+                  animationDuration: `${ember.duration}s`,
+                } as CSSProperties
+              }
+            />
+          ))}
+        </div>
 
         {EXHIBITIONS.map((ex) => (
           <article className={`exh-entry exh-${ex.status}`} key={ex.title}>
