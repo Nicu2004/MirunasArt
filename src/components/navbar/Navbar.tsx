@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Menu, X, User } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import './Navbar.css';
+import { useAuth } from "../authpage/Authcontext";
 
 interface NavLink {
   label: string;
@@ -16,6 +17,7 @@ const links: NavLink[] = [
 ];
 
 export default function Navbar() {
+  const {getAuthToken} = useAuth();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [active, setActive] = useState<string>(links[0].href);
@@ -64,10 +66,20 @@ export default function Navbar() {
         </ul>
 
         <div className="av-actions">
-          <Link to="/login" className="av-login" onClick={() => setMenuOpen(false)}>
-            <User size={16} strokeWidth={1.75} />
-            <span>Autentificare</span>
-          </Link>
+
+          {
+            getAuthToken()==null ? ( 
+              <Link to="/login" className="av-login" onClick={() => setMenuOpen(false)}>
+                <User size={16} strokeWidth={1.75} />
+                <span>Autentificare</span>
+              </Link>
+          ):(
+              <Link to="/profile" className="av-login" onClick={() => setMenuOpen(false)}>
+                <User size={16} strokeWidth={1.75} />
+                <span>Profil</span>
+              </Link>
+          ) }
+
 
           <a href="#visit" className="av-cta" onClick={() => handleNavClick('#visit')}>
             Plan a Visit

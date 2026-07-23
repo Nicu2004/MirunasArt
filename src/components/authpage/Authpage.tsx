@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from "react";
-
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "./Authcontext";
 import "./Authpage.css";
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -54,6 +55,8 @@ export default function AuthPage() {
 }
 
 function LoginForm() {
+  const { login} = useAuth();
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -61,32 +64,18 @@ function LoginForm() {
 
   async function handleSubmit(e: FormEvent) {
 
-    alert("loogin cred is being sent")
-    alert(API_URL)
     e.preventDefault();
     setError(null);
     setLoading(true);
     try {
-      const res = await fetch(`${API_URL}/api/auth/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
-
-      if (!res.ok) {
-        const data = await res.json().catch(() => null);
-        throw new Error(data?.message ?? "Email sau parolă incorecte");
-      }
-
-      const data = await res.json();
-      // TODO: salvezi token-ul/sesiunea (ex: localStorage, context de auth,
-      // sau cookie httpOnly dacă backend-ul setează el cookie-ul direct)
-      console.log("Autentificat:", data);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Eroare la autentificare");
-    } finally {
-      setLoading(false);
-    }
+      await login(email, password); 
+      navigate("/");
+      console.log("Autentificat");
+    }catch (err) {
+  setError(err instanceof Error ? err.message : "Eroare la autentificare");
+} finally {
+  setLoading(false);
+}
   }
 
   return (
@@ -128,10 +117,12 @@ function LoginForm() {
 
 function RegisterForm() {
   const [step, setStep] = useState<RegisterStep>(1);
-
+  const { register} = useAuth();
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [code, setCode] = useState("");
   const [password, setPassword] = useState("");
+  const [name,  setName] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
   const [loading, setLoading] = useState(false);
@@ -203,20 +194,10 @@ function RegisterForm() {
 
     setLoading(true);
     try {
-      const res = await fetch(`${API_URL}/api/auth/register`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
-
-      if (!res.ok) {
-        const data = await res.json().catch(() => null);
-        throw new Error(data?.message ?? "Nu am putut crea contul");
-      }
-
-      const data = await res.json();
-      // TODO: salvezi token-ul/sesiunea, la fel ca la login
-      console.log("Cont creat:", data);
+      await register(email, password, name, code);
+      navigate('/');
+      console.log("autentificated");
+      
     } catch (err) {
       setError(err instanceof Error ? err.message : "Nu am putut crea contul");
     } finally {
@@ -316,6 +297,16 @@ function RegisterForm() {
 
       {step === 3 && (
         <form className="auth-form" onSubmit={handleCreateAccount}>
+          <label className="auth-field">
+            <span>Nume</span>
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Nume de utilizator"
+              required
+            />
+          </label>
           <label className="auth-field">
             <span>Parolă</span>
             <input
