@@ -111,10 +111,18 @@ export default function Navbar() {
           ))}
         </ul>
 
-        <Link to="/login" className="av-mobile-login" onClick={() => setMenuOpen(false)}>
-          <User size={16} strokeWidth={1.75} />
-          <span>Autentificare</span>
-        </Link>
+       {
+            getAuthToken()==null ? ( 
+              <Link to="/login" className="av-login" onClick={() => setMenuOpen(false)}>
+                <User size={16} strokeWidth={1.75} />
+                <span>Autentificare</span>
+              </Link>
+          ):(
+              <Link to="/profile" className="av-login" onClick={() => setMenuOpen(false)}>
+                <User size={16} strokeWidth={1.75} />
+                <span>Profil</span>
+              </Link>
+          ) }
         <a href="#visit" className="av-mobile-cta" onClick={() => handleNavClick('#visit')}>
           Plan a Visit
         </a>
