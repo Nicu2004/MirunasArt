@@ -17,7 +17,7 @@ interface User {
 interface AuthContextValue {
   user: User | null;
   accessToken: string | null;
-  loading: boolean; // true în timpul verificării inițiale a sesiunii
+  loading: boolean;
   login: (email: string, password: string) => Promise<void>;
   register: (email: string, password: string, name:string, code:string) => Promise<void>;
   logout: () => Promise<void>;
@@ -28,37 +28,40 @@ interface AuthContextValue {
 const AuthContext = createContext<AuthContextValue | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
+
+   console.log("AuthProvider a pornit"); // ← linia 1
   const [user, setUser] = useState<User | null>(null);
-  // Access token-ul stă DOAR în memorie (state React) — nu în localStorage,
-  // nu în cookie accesibil din JS. Se pierde la refresh de pagină, dar
-  // asta se repară prin silent refresh la montare (vezi useEffect mai jos).
+
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   const refresh = useCallback(async (): Promise<string | null> => {
     try {
+      console.log('====================================');
+      console.log("Trying to refesh");
+      console.log('====================================');
       const res = await fetch(`${API_URL}/api/auth/refresh`, {
         method: "POST",
-        credentials: "include", // trimite cookie-ul httpOnly de refresh
+        credentials: "include", 
       });
       if (!res.ok) return null;
-
+      console.log("fetch s-a terminat, status:", res.status)
       const data = await res.json();
       setAccessToken(data.accessToken);
       return data.accessToken as string;
-    } catch {
+    } catch(err) {
+       console.log("EROARE în refresh():", err);
       return null;
     }
   }, []);
 
-  // La încărcarea aplicației (sau refresh de pagină), încearcă să restaurezi
-  // sesiunea folosind cookie-ul de refresh, fără să ceri userului să se
-  // logheze din nou.
+
   useEffect(() => {
     (async () => {
+       console.log("useEffect-ul de silent refresh a pornit");
       const token = await refresh();
       if (token) {
-        const res = await fetch(`${API_URL}/api/auth/me`, {
+        const res = await fetch(`${API_URL}/api/user/profile`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (res.ok) {
@@ -70,12 +73,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     })();
   }, [refresh]);
 
-  /**
-   * Wrapper peste fetch care atașează automat access token-ul, și dacă
-   * primește 401 (token expirat), încearcă o dată un refresh silențios
-   * și reface request-ul original. Folosește asta pentru orice apel către
-   * rute protejate, în loc de fetch direct.
-   */
   const authFetch = useCallback(
     async (input: string, init: RequestInit = {}) => {
       const doFetch = (token: string | null) =>
@@ -158,6 +155,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 export function useAuth() {
   const ctx = useContext(AuthContext);
-  if (!ctx) throw new Error("useAuth trebuie folosit în interiorul <AuthProvider>");
+  if (!ctx) throw new Error("useAuth error");
   return ctx;
 }

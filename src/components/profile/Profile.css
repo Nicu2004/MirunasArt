@@ -1,0 +1,183 @@
+.profile-page {
+  --pf-bg: #f5f1e8;
+  --pf-charcoal: #2b2b29;
+  --pf-ivory: #f3ede1;
+  --pf-gold: #c9a35c;
+  --pf-border: rgba(43, 43, 41, 0.12);
+  --pf-muted: #6b6b63;
+
+  /* navbar-ul e fixed, 78px înălțime — orice conținut sub el are nevoie
+     de acest offset, altfel primul rând e ascuns dedesubt */
+  padding-top: 78px;
+  min-height: 100vh;
+  background: var(--pf-bg);
+}
+
+.profile-status {
+  padding: 96px 32px 32px;
+  text-align: center;
+  font-family: "Inter", sans-serif;
+  color: var(--pf-muted);
+}
+
+.profile-status--error {
+  color: #a4453a;
+}
+
+.profile-section {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 40px 32px;
+  border-bottom: 1px solid var(--pf-border);
+}
+
+.profile-section:last-child {
+  border-bottom: none;
+}
+
+.profile-title {
+  font-family: "Cormorant Garamond", serif;
+  font-weight: 500;
+  font-size: 32px;
+  color: var(--pf-charcoal);
+  margin: 0 0 28px;
+}
+
+.profile-subtitle {
+  font-family: "Cormorant Garamond", serif;
+  font-weight: 500;
+  font-size: 22px;
+  font-style: italic;
+  color: var(--pf-charcoal);
+  margin: 0;
+}
+
+.profile-field {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--pf-border);
+}
+
+.profile-field:last-child {
+  border-bottom: none;
+}
+
+.profile-field__label {
+  font-family: "Inter", sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--pf-muted);
+  min-width: 90px;
+}
+
+.profile-field__value {
+  font-family: "Inter", sans-serif;
+  font-size: 15px;
+  color: var(--pf-charcoal);
+}
+
+.profile-field__value em {
+  color: var(--pf-muted);
+  font-style: italic;
+}
+
+.profile-field__edit {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  justify-content: flex-end;
+}
+
+.profile-field__input {
+  font-family: "Inter", sans-serif;
+  font-size: 14px;
+  color: var(--pf-charcoal);
+  background: #fff;
+  border: 1px solid var(--pf-border);
+  border-radius: 4px;
+  padding: 7px 10px;
+  min-width: 160px;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.profile-field__input:focus {
+  border-color: var(--pf-gold);
+}
+
+.profile-btn {
+  font-family: "Inter", sans-serif;
+  font-size: 12.5px;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  border-radius: 3px;
+  padding: 7px 14px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: background 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
+  white-space: nowrap;
+}
+
+.profile-btn--edit {
+  color: var(--pf-charcoal);
+  background: none;
+  border-color: var(--pf-border);
+}
+
+.profile-btn--edit:hover {
+  border-color: var(--pf-gold);
+  color: var(--pf-gold);
+}
+
+.profile-btn--save {
+  color: #fff;
+  background: var(--pf-gold);
+}
+
+.profile-btn--save:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+.profile-btn--cancel {
+  color: var(--pf-muted);
+  background: none;
+  border-color: var(--pf-border);
+}
+
+.profile-btn--cancel:hover:not(:disabled) {
+  color: var(--pf-charcoal);
+}
+
+.profile-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (max-width: 640px) {
+  .profile-section {
+    padding: 28px 20px;
+  }
+
+  .profile-field {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .profile-field__edit {
+    width: 100%;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .profile-field__input {
+    min-width: 0;
+    flex: 1;
+  }
+}
