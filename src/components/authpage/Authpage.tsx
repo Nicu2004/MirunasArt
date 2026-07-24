@@ -15,6 +15,7 @@ const STEP_LABELS: Record<RegisterStep, string> = {
 };
 
 export default function AuthPage() {
+
   const [mode, setMode] = useState<Mode>("login");
 
   return (
@@ -129,13 +130,14 @@ function RegisterForm() {
   const [error, setError] = useState<string | null>(null);
 
   async function handleSendCode(e: FormEvent) {
+    const NGROK_HEADERS = { "ngrok-skip-browser-warning": "true" };
     e.preventDefault();
     setError(null);
     setLoading(true);
     try {
       const res = await fetch(`${API_URL}/api/auth/send-verification`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", ...NGROK_HEADERS },
         body: JSON.stringify({ email }),
       });
       console.log(res.body);
@@ -156,13 +158,14 @@ function RegisterForm() {
   }
 
   async function handleVerifyCode(e: FormEvent) {
+    const NGROK_HEADERS = { "ngrok-skip-browser-warning": "true" };
     e.preventDefault();
     setError(null);
     setLoading(true);
     try {
       const res = await fetch(`${API_URL}/api/auth/verify-code`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", ...NGROK_HEADERS },
         body: JSON.stringify({ email, code }),
       });
 
@@ -206,12 +209,13 @@ function RegisterForm() {
   }
 
   async function handleResendCode() {
+    const NGROK_HEADERS = { "ngrok-skip-browser-warning": "true" };
     setError(null);
     setLoading(true);
     try {
       const res = await fetch(`${API_URL}/api/auth/send-verification`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", ...NGROK_HEADERS },
         body: JSON.stringify({ email }),
       });
       if (!res.ok) throw new Error("Nu am putut retrimite codul");

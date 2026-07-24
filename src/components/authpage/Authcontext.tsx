@@ -29,6 +29,8 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
 
+  const NGROK_HEADERS = { "ngrok-skip-browser-warning": "true" };
+
    console.log("AuthProvider a pornit"); // ← linia 1
   const [user, setUser] = useState<User | null>(null);
 
@@ -43,6 +45,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const res = await fetch(`${API_URL}/api/auth/refresh`, {
         method: "POST",
         credentials: "include", 
+        headers: NGROK_HEADERS,
       });
       if (!res.ok) return null;
       console.log("fetch s-a terminat, status:", res.status)
@@ -62,7 +65,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const token = await refresh();
       if (token) {
         const res = await fetch(`${API_URL}/api/user/profile`, {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: { Authorization: `Bearer ${token}`, ...NGROK_HEADERS },
         });
         if (res.ok) {
           const data = await res.json();
@@ -105,7 +108,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const res = await fetch(`${API_URL}/api/auth/login`, {
       method: "POST",
       credentials: "include",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", ...NGROK_HEADERS },
       body: JSON.stringify({ email, password }),
     });
     if (!res.ok) {
@@ -122,7 +125,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const res = await fetch(`${API_URL}/api/auth/register`, {
       method: "POST",
       credentials: "include",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", ...NGROK_HEADERS },
       body: JSON.stringify({ email, password, name ,code}),
     });
     if (!res.ok) {

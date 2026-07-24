@@ -11,6 +11,7 @@ type UserProfile = {
 };
 
 export default function Profile() {
+  const NGROK_HEADERS = { "ngrok-skip-browser-warning": "true" };
   const { authFetch } = useAuth();
 
   const [name, setName] = useState("");
@@ -62,7 +63,7 @@ export default function Profile() {
     try {
       const res = await authFetch(`${API_URL}/api/user/profile`, {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json" , ...NGROK_HEADERS},
         body: JSON.stringify({ phoneNumber: phoneInput }),
       });
 
