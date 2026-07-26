@@ -69,7 +69,7 @@ function LoginForm() {
     setError(null);
     setLoading(true);
     try {
-      await login(email, password); 
+      await login(email, password);
       navigate("/");
       console.log("Autentificat");
     }catch (err) {

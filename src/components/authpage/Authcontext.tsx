@@ -12,6 +12,7 @@ const API_URL = import.meta.env.VITE_API_URL;
 interface User {
   id: number;
   email: string;
+  isAdmin:boolean
 }
 
 interface AuthContextValue {
@@ -36,7 +37,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-
   const refresh = useCallback(async (): Promise<string | null> => {
     try {
       console.log('====================================');
@@ -120,7 +120,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setAccessToken(data.accessToken);
     setUser(data.user);
   }
-
   async function register(email: string, password: string, name:string, code:string) {
     const res = await fetch(`${API_URL}/api/auth/register`, {
       method: "POST",

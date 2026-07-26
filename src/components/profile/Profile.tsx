@@ -1,5 +1,6 @@
 import { useAuth } from "../authpage/Authcontext";
 import { useState, useEffect } from "react";
+import { Link } from 'react-router-dom';
 import "./Profile.css";
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -8,6 +9,7 @@ type UserProfile = {
   name: string;
   email: string;
   phoneNumber: string;
+  isAdmin: boolean;
 };
 
 export default function Profile() {
@@ -19,8 +21,7 @@ export default function Profile() {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
-  // stare separată pentru editarea telefonului
+  const [isAdmin, setIsAdmin] = useState(false);
   const [isEditingPhone, setIsEditingPhone] = useState(false);
   const [phoneInput, setPhoneInput] = useState("");
   const [savingPhone, setSavingPhone] = useState(false);
@@ -35,11 +36,12 @@ export default function Profile() {
         }
         const data = await res.json();
         const profile: UserProfile = data.user;
-
+      
         setName(profile.name ?? "");
         setEmail(profile.email ?? "");
         setPhoneNumber(profile.phoneNumber ?? "");
         setPhoneInput(profile.phoneNumber ?? "");
+        setIsAdmin(profile.isAdmin);
       } catch {
         setError("Eroare la încărcarea profilului");
       } finally {
@@ -57,7 +59,6 @@ export default function Profile() {
     setPhoneInput(phoneNumber);
     setIsEditingPhone(false);
   }
-
   async function savePhone() {
     setSavingPhone(true);
     try {
@@ -82,22 +83,19 @@ export default function Profile() {
     }
   }
 
-  if (loading) return <p className="profile-status">Se încarcă...</p>;
-  if (error) return <p className="profile-status profile-status--error">{error}</p>;
+ if (loading) return <p className="profile-status">Se încarcă...</p>;
+if (error) return <p className="profile-status profile-status--error">{error}</p>;
 
+if (isAdmin) {
   return (
     <div className="profile-page">
+
       <section className="profile-section personal-details">
         <h1 className="profile-title">Detalii personale</h1>
 
         <div className="profile-field">
           <span className="profile-field__label">Nume</span>
           <span className="profile-field__value">{name}</span>
-        </div>
-
-        <div className="profile-field">
-          <span className="profile-field__label">Email</span>
-          <span className="profile-field__value">{email}</span>
         </div>
 
         <div className="profile-field">
@@ -138,23 +136,86 @@ export default function Profile() {
             </div>
           )}
         </div>
-      </section>
+              <Link to="/admin-dashboard" className="profile-btn profile-btn--edit">
+        Admin dashboard
+      </Link>
 
-      <section className="profile-section order-details">
-        <h2 className="profile-subtitle">Comenzi active</h2>
-      </section>
-
-      <section className="profile-section order-history">
-        <h2 className="profile-subtitle">Istoric comenzi</h2>
-      </section>
-
-      <section className="profile-section notifications-area">
-        <h2 className="profile-subtitle">Notificări</h2>
-      </section>
-
-      <section className="profile-section faq-area">
-        <h2 className="profile-subtitle">Întrebări frecvente</h2>
       </section>
     </div>
   );
+}
+
+
+return (
+  <div className="profile-page">
+    <section className="profile-section personal-details">
+      <h1 className="profile-title">Detalii personale</h1>
+
+      <div className="profile-field">
+        <span className="profile-field__label">Nume</span>
+        <span className="profile-field__value">{name}</span>
+      </div>
+
+      <div className="profile-field">
+        <span className="profile-field__label">Email</span>
+        <span className="profile-field__value">{email}</span>
+      </div>
+
+      <div className="profile-field">
+        <span className="profile-field__label">Telefon</span>
+
+        {isEditingPhone ? (
+          <div className="profile-field__edit">
+            <input
+              type="tel"
+              value={phoneInput}
+              onChange={(e) => setPhoneInput(e.target.value)}
+              placeholder="07xx xxx xxx"
+              className="profile-field__input"
+            />
+            <button
+              className="profile-btn profile-btn--save"
+              onClick={savePhone}
+              disabled={savingPhone}
+            >
+              {savingPhone ? "Se salvează..." : "Salvează"}
+            </button>
+            <button
+              className="profile-btn profile-btn--cancel"
+              onClick={cancelEditingPhone}
+              disabled={savingPhone}
+            >
+              Anulează
+            </button>
+          </div>
+        ) : (
+          <div className="profile-field__edit">
+            <span className="profile-field__value">
+              {phoneNumber || <em>Nesetat</em>}
+            </span>
+            <button className="profile-btn profile-btn--edit" onClick={startEditingPhone}>
+              Editează
+            </button>
+          </div>
+        )}
+      </div>
+    </section>
+
+    <section className="profile-section order-details">
+      <h2 className="profile-subtitle">Comenzi active</h2>
+    </section>
+
+    <section className="profile-section order-history">
+      <h2 className="profile-subtitle">Istoric comenzi</h2>
+    </section>
+
+    <section className="profile-section notifications-area">
+      <h2 className="profile-subtitle">Notificări</h2>
+    </section>
+
+    <section className="profile-section faq-area">
+      <h2 className="profile-subtitle">Întrebări frecvente</h2>
+    </section>
+  </div>
+);
 }

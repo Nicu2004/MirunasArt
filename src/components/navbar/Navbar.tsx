@@ -45,10 +45,10 @@ export default function Navbar() {
   return (
     <header className={`av-navbar ${scrolled ? 'av-scrolled' : ''}`}>
       <nav className="av-navbar-inner">
-        <a href="#top" className="av-wordmark" onClick={() => handleNavClick('#top')}>
+        <Link to="/" className="av-wordmark">
           <span className="av-wordmark-mark">&</span>
           <span className="av-wordmark-text">Miruna's Art</span>
-        </a>
+        </Link>
 
         <ul className="av-links">
           {links.map((link) => (

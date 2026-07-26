@@ -7,6 +7,7 @@ import ArtistSection from './components/artistsection/Artistsection';
 import AuthPage from './components/authpage/Authpage';
 import Profile from './components/profile/Profile';
 import ProtectedRoute from './components/security/ProtectedRoutes';
+import AdminPanel from './components/admin/AdminPanel'
 import './App.css';
 
 function HomePage() {
@@ -27,6 +28,13 @@ function ProfileSection() {
   </>
   
 }
+function AdminDasboard() {
+  return(
+    <>
+    <AdminPanel/>
+    </>
+  )
+} 
 
 function App() {
   return (
@@ -34,6 +42,7 @@ function App() {
       <Route path="/" element={<HomePage />} />
       <Route path="/login" element={<AuthPage />} />
       <Route path="/profile" element={<ProtectedRoute><ProfileSection/></ProtectedRoute>}/>
+      <Route path="admin-dashboard" element={<ProtectedRoute><AdminDasboard/></ProtectedRoute>}/>
     </Routes>
   );
 }
