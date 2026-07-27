@@ -22,10 +22,12 @@ export default function Invoices() {
       try {
         const res = await authFetch(`${API_URL}/api/admin/invoices`);
         if (!res.ok) {
+            alert("nu e ok")
           setError("Nu am putut încărca facturile");
           return;
         }
         const data = await res.json();
+
         setInvoices(data.invoices);
       } catch {
         setError("Eroare la încărcarea facturilor");

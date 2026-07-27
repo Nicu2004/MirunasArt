@@ -1,5 +1,6 @@
 export interface OrderItemSummary {
-  artworkTitle: string;
+  productName: string;
+  quantity: number;
   price: number;
 }
 
@@ -20,7 +21,9 @@ const STATUS_LABEL: Record<Order["status"], string> = {
 };
 
 export function OrderRow({ order }: { order: Order }) {
-  const itemsSummary = order.items.map((i) => i.artworkTitle).join(", ");
+  const itemsSummary = order.items
+    .map((i) => (i.quantity > 1 ? `${i.productName} ×${i.quantity}` : i.productName))
+    .join(", ");
 
   return (
     <div className="admin-row">

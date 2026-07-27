@@ -1,47 +1,36 @@
-import { useMemo } from 'react';
-import './Collection.css';
+import { useState, useEffect } from "react";
+import "./Collection.css";
 
-// Reuses the same glob pattern as the carousel so any image dropped into
-// src/assets as image-component-{n}.ext shows up here automatically.
-const imageModules = import.meta.glob('/src/assets/image-component-*.{png,jpg,jpeg,svg,webp,gif}', {
-  eager: true,
-  import: 'default',
-}) as Record<string, string>;
+const API_URL = import.meta.env.VITE_API_URL;
 
-const extractNumber = (path: string): number => {
-  const match = path.match(/image-component-(\d+)\./);
-  return match ? parseInt(match[1], 10) : 0;
-};
-
-// Placeholder metadata — replace title/artist/year per piece, or swap this
-// for data pulled from a CMS / API once you have real catalogue info.
-interface PieceMeta {
-  title: string;
-  artist: string;
-  year: string;
+interface Product {
+  id: number;
+  name: string;
+  price: number;
+  photoUrl: string;
 }
 
-const DEFAULT_META: PieceMeta = {
-  title: 'Untitled',
-  artist: 'Unknown Artist',
-  year: 'n.d.',
-};
-
-// Map specific image numbers to real metadata as you get it, e.g.:
-// const META_BY_NUMBER: Record<number, PieceMeta> = {
-//   1: { title: 'Pastoral Crossing', artist: 'P. Zeller', year: '1878' },
-// };
-const META_BY_NUMBER: Record<number, PieceMeta> = {};
-
 export default function Collection() {
-  const pieces = useMemo(() => {
-    return Object.entries(imageModules)
-      .sort(([a], [b]) => extractNumber(a) - extractNumber(b))
-      .map(([path, src]) => {
-        const number = extractNumber(path);
-        const meta = META_BY_NUMBER[number] ?? DEFAULT_META;
-        return { number, src, ...meta };
-      });
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await fetch(`${API_URL}/api/products`);
+        if (!res.ok) {
+          setError("Nu am putut încărca colecția");
+          return;
+        }
+        const data = await res.json();
+        setProducts(data.products);
+      } catch {
+        setError("Eroare la încărcarea colecției");
+      } finally {
+        setLoading(false);
+      }
+    })();
   }, []);
 
   return (
@@ -52,19 +41,22 @@ export default function Collection() {
         <div className="collection-rule" />
       </div>
 
-      {pieces.length === 0 ? (
+      {loading && <p className="collection-empty">Se încarcă...</p>}
+      {error && <p className="collection-empty">{error}</p>}
+
+      {!loading && !error && products.length === 0 ? (
         <p className="collection-empty">No pieces to display yet.</p>
       ) : (
         <div className="collection-grid">
-          {pieces.map((piece) => (
-            <figure className="collection-card" key={piece.number}>
+          {products.map((product) => (
+            <figure className="collection-card" key={product.id}>
               <div className="collection-frame">
-                <img src={piece.src} alt={piece.title} loading="lazy" />
+                <img src={product.photoUrl} alt={product.name} loading="lazy" />
               </div>
               <figcaption className="collection-caption">
-                <span className="collection-piece-title">{piece.title}</span>
+                <span className="collection-piece-title">{product.name}</span>
                 <span className="collection-piece-meta">
-                  {piece.artist} &middot; {piece.year}
+                  {product.price.toLocaleString("ro-RO")} lei
                 </span>
               </figcaption>
             </figure>
