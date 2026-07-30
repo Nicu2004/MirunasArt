@@ -122,10 +122,6 @@
   }
 }
 
-/* Embers — small sparks that flicker off the spine and drift up,
-   like sparks rising off a flame. Positioned in a full-height layer
-   over the timeline; each particle uses --ember-left (set inline per
-   particle) to vary its horizontal drift target. */
 
 .exh-particles {
   position: absolute;
@@ -148,24 +144,38 @@
   box-shadow: 0 0 4px rgba(255, 200, 120, 0.75);
   opacity: 0;
   animation-name: exh-ember-rise;
-  animation-timing-function: ease-out;
+  animation-timing-function: cubic-bezier(0.25, 0.1, 0.3, 1);
   animation-iteration-count: infinite;
+  will-change: transform, opacity;
 }
+
 
 @keyframes exh-ember-rise {
   0% {
-    transform: translate(0, 0) scale(0.5);
+    transform: translate(0, 0) scale(0.4) rotate(0deg);
     opacity: 0;
   }
-  15% {
+  8% {
+    opacity: 1;
+  }
+  22% {
+    transform: translate(calc(var(--ember-left) * 0.4), -7px) scale(0.9) rotate(15deg);
+    opacity: 0.85;
+  }
+  38% {
+    /* mic contra-salt lateral, ca o rafală de aer care o abate */
+    transform: translate(calc(var(--ember-left) * -0.3), -14px) scale(1) rotate(-10deg);
+    opacity: 0.55;
+  }
+  52% {
     opacity: 0.9;
   }
-  55% {
-    transform: translate(var(--ember-left), -18px) scale(1);
-    opacity: 0.65;
+  70% {
+    transform: translate(calc(var(--ember-left) * 1.1), -25px) scale(0.7) rotate(20deg);
+    opacity: 0.4;
   }
   100% {
-    transform: translate(calc(var(--ember-left) * 1.6), -38px) scale(0.25);
+    transform: translate(calc(var(--ember-left) * 1.6), -38px) scale(0.15) rotate(30deg);
     opacity: 0;
   }
 }
@@ -192,16 +202,43 @@
   margin-top: 6px;
   background: var(--exh-bg);
   border: 1px solid var(--exh-gold);
+  transition: transform 0.2s ease;
+}
+
+.exh-entry:hover .exh-node {
+  transform: scale(1.15);
 }
 
 .exh-now .exh-node {
   background: var(--exh-gold);
-  box-shadow: 0 0 0 4px rgba(201, 163, 92, 0.18);
+  box-shadow: 0 0 0 4px rgba(201, 163, 92, 0.18), 0 0 10px rgba(201, 163, 92, 0.6);
+  animation: exh-node-pulse 2.2s ease-in-out infinite;
 }
 
+@keyframes exh-node-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 4px rgba(201, 163, 92, 0.18), 0 0 10px rgba(201, 163, 92, 0.6);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(201, 163, 92, 0.1), 0 0 16px rgba(201, 163, 92, 0.8);
+  }
+}
+
+.exh-upcoming .exh-node {
+  background: var(--exh-bg);
+  border: 1.5px solid var(--exh-gold);
+}
 .exh-past .exh-node {
-  border-color: rgba(255, 255, 255, 0.25);
-  opacity: 0.6;
+  background: var(--exh-bg);
+  border-color: rgba(255, 255, 255, 0.22);
+  opacity: 0.55;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .exh-now .exh-node {
+    animation: none;
+  }
 }
 
 .exh-card {
@@ -317,5 +354,58 @@
 
   .exh-particle {
     display: none;
+  }
+}
+
+
+
+.exh-show-all-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin: 32px auto 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  font-size: 12.5px;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--exh-gold);
+  transition: opacity 0.2s ease;
+}
+
+.exh-show-all-btn:hover {
+  opacity: 0.75;
+}
+
+.exh-show-all-arrow {
+  display: block;
+  width: 20px;
+  height: 10px;
+  color: var(--exh-gold);
+  animation: exh-arrow-float 1.6s ease-in-out infinite;
+}
+
+.exh-show-all-arrow svg {
+  width: 100%;
+  height: 100%;
+}
+
+@keyframes exh-arrow-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(4px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .exh-show-all-arrow {
+    animation: none;
   }
 }

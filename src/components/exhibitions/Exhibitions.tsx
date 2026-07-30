@@ -1,59 +1,24 @@
 import type { CSSProperties } from 'react';
+import { useState, useEffect } from 'react';
+import { useAuth } from '../authpage/Authcontext';
 import './Exhibitions.css';
 
-type ExhibitionStatus = 'now' | 'upcoming' | 'past';
+const API_URL = import.meta.env.VITE_API_URL;
 
 interface Exhibition {
-  status: ExhibitionStatus;
+  status: 'now' | 'upcoming' | 'past';
   title: string;
-  dates: string;
+  date: string;
   location: string;
   description: string;
 }
 
-// Replace with real exhibition data as it's confirmed.
-const EXHIBITIONS: Exhibition[] = [
-  {
-    status: 'now',
-    title: 'Light on Water',
-    dates: 'July 12 — September 3, 2026',
-    location: 'Main Gallery',
-    description:
-      'A survey of landscape works exploring how painters have rendered reflected and diffused light across two centuries.',
-  },
-  {
-    status: 'upcoming',
-    title: 'The Pastoral Eye',
-    dates: 'September 20 — November 15, 2026',
-    location: 'East Wing',
-    description:
-      'Rural scenes and working landscapes, tracing how the countryside has been depicted as both labor and retreat.',
-  },
-  {
-    status: 'past',
-    title: 'Alpine Perspectives',
-    dates: 'March 2 — June 20, 2026',
-    location: 'Main Gallery',
-    description:
-      'Mountain and lake views from the 19th century, considering scale, distance, and the sublime in landscape painting.',
-  },
-];
-
-const STATUS_LABEL: Record<ExhibitionStatus, string> = {
-  now: 'Now Showing',
-  upcoming: 'Upcoming',
-  past: 'Past Exhibition',
-};
-
-// Sparks flickering off the spine at scattered points along its length —
-// fixed values (not Math.random()) so the layout is stable across renders
-// and doesn't shift on re-render.
 interface Ember {
   top: string;
-  left: number; // px offset from the spine
-  size: number; // px
-  delay: number; // s
-  duration: number; // s
+  left: number;
+  size: number;
+  delay: number;
+  duration: number;
 }
 
 const EMBERS: Ember[] = [
@@ -73,7 +38,35 @@ const EMBERS: Ember[] = [
   { top: '96%', left: 3, size: 2, delay: 2.6, duration: 3.1 },
 ];
 
+const STATUS_LABEL: Record<Exhibition['status'], string> = {
+  now: 'Now Showing',
+  upcoming: 'Upcoming',
+  past: 'Past Exhibition',
+};
+
 export default function Exhibitions() {
+  const { authFetch } = useAuth();
+  const [exhibitions, setExhibitions] = useState<Exhibition[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const [showAll, setShowAll] = useState(false);
+
+  async function loadExhibitions() {
+    const res = await authFetch(`${API_URL}/api/exhibitions`);
+    if (!res.ok) {
+      setError('error fetching the exhibitions');
+      return;
+    }
+    const json = await res.json();
+    setExhibitions(json.data);
+  }
+
+  useEffect(() => {
+    loadExhibitions();
+  }, []);
+
+  const visibleExhibitions = showAll ? exhibitions : exhibitions.slice(0, 3);
+  const hasMore = !showAll && exhibitions.length > 3;
+
   return (
     <section id="exhibitions" className="exh-section">
       <div className="exh-heading">
@@ -104,23 +97,42 @@ export default function Exhibitions() {
           ))}
         </div>
 
-        {EXHIBITIONS.map((ex) => (
-          <article className={`exh-entry exh-${ex.status}`} key={ex.title}>
+        {error != null && <h3>{error}</h3>}
+
+        {visibleExhibitions.map((exhibition, i) => (
+          <article className={`exh-entry exh-${exhibition.status}`} key={i}>
             <div className="exh-node" aria-hidden="true" />
 
             <div className="exh-card">
-              <span className={`exh-status exh-status-${ex.status}`}>
-                {STATUS_LABEL[ex.status]}
+              <span className={`exh-status exh-status-${exhibition.status}`}>
+                {STATUS_LABEL[exhibition.status]}
               </span>
-              <h3 className="exh-entry-title">{ex.title}</h3>
+              <h3 className="exh-entry-title">{exhibition.title}</h3>
               <p className="exh-meta">
-                {ex.dates} &middot; {ex.location}
+                {exhibition.date} &middot; {exhibition.location}
               </p>
-              <p className="exh-description">{ex.description}</p>
+              <p className="exh-description">{exhibition.description}</p>
             </div>
           </article>
         ))}
       </div>
+
+      {hasMore && (
+        <button className="exh-show-all-btn" onClick={() => setShowAll(true)}>
+          <span>Vezi toate expozițiile</span>
+          <span className="exh-show-all-arrow" aria-hidden="true">
+            <svg viewBox="0 0 24 12" fill="none">
+              <path
+                d="M2 2L12 10L22 2"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </span>
+        </button>
+      )}
     </section>
   );
 }
