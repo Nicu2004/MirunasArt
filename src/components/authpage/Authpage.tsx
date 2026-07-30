@@ -4,9 +4,11 @@ import { useAuth } from "./Authcontext";
 import "./Authpage.css";
 
 const API_URL = import.meta.env.VITE_API_URL;
+const NGROK_HEADERS = { "ngrok-skip-browser-warning": "true" };
 
 type Mode = "login" | "register";
 type RegisterStep = 1 | 2 | 3;
+type ResetStep = 1 | 2;
 
 const STEP_LABELS: Record<RegisterStep, string> = {
   1: "Email",
@@ -15,8 +17,32 @@ const STEP_LABELS: Record<RegisterStep, string> = {
 };
 
 export default function AuthPage() {
-
   const [mode, setMode] = useState<Mode>("login");
+  const [showReset, setShowReset] = useState(false);
+
+  if (showReset) {
+    return (
+      <div className="auth-page">
+        <div className="auth-card">
+          <div className="auth-header">
+            <span className="auth-mark">&amp;</span>
+            <h1 className="auth-title">Resetează parola</h1>
+          </div>
+
+          <ResetPasswordForm onDone={() => setShowReset(false)} />
+
+          <button
+            type="button"
+            className="auth-link-btn"
+            onClick={() => setShowReset(false)}
+            style={{ marginTop: 16 }}
+          >
+            Înapoi la autentificare
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="auth-page">
@@ -49,14 +75,18 @@ export default function AuthPage() {
           </button>
         </div>
 
-        {mode === "login" ? <LoginForm /> : <RegisterForm />}
+        {mode === "login" ? (
+          <LoginForm onForgotPassword={() => setShowReset(true)} />
+        ) : (
+          <RegisterForm />
+        )}
       </div>
     </div>
   );
 }
 
-function LoginForm() {
-  const { login} = useAuth();
+function LoginForm({ onForgotPassword }: { onForgotPassword: () => void }) {
+  const { login } = useAuth();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -64,19 +94,17 @@ function LoginForm() {
   const [error, setError] = useState<string | null>(null);
 
   async function handleSubmit(e: FormEvent) {
-
     e.preventDefault();
     setError(null);
     setLoading(true);
     try {
       await login(email, password);
       navigate("/");
-      console.log("Autentificat");
-    }catch (err) {
-  setError(err instanceof Error ? err.message : "Eroare la autentificare");
-} finally {
-  setLoading(false);
-}
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Eroare la autentificare");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -103,9 +131,14 @@ function LoginForm() {
         />
       </label>
 
-      <a href="#forgot-password" className="auth-forgot">
+      <button
+        type="button"
+        className="auth-forgot"
+        onClick={onForgotPassword}
+        style={{ background: "none", border: "none", cursor: "pointer" }}
+      >
         Ai uitat parola?
-      </a>
+      </button>
 
       {error && <p className="auth-error">{error}</p>}
 
@@ -118,19 +151,17 @@ function LoginForm() {
 
 function RegisterForm() {
   const [step, setStep] = useState<RegisterStep>(1);
-  const { register} = useAuth();
+  const { register } = useAuth();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [code, setCode] = useState("");
   const [password, setPassword] = useState("");
-  const [name,  setName] = useState("");
+  const [name, setName] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   async function handleSendCode(e: FormEvent) {
-    const NGROK_HEADERS = { "ngrok-skip-browser-warning": "true" };
     e.preventDefault();
     setError(null);
     setLoading(true);
@@ -140,8 +171,7 @@ function RegisterForm() {
         headers: { "Content-Type": "application/json", ...NGROK_HEADERS },
         body: JSON.stringify({ email }),
       });
-      console.log(res.body);
-      
+
       if (!res.ok) {
         const data = await res.json().catch(() => null);
         throw new Error(data?.message ?? "Nu am putut trimite emailul de verificare");
@@ -158,7 +188,6 @@ function RegisterForm() {
   }
 
   async function handleVerifyCode(e: FormEvent) {
-    const NGROK_HEADERS = { "ngrok-skip-browser-warning": "true" };
     e.preventDefault();
     setError(null);
     setLoading(true);
@@ -198,9 +227,7 @@ function RegisterForm() {
     setLoading(true);
     try {
       await register(email, password, name, code);
-      navigate('/');
-      console.log("autentificated");
-      
+      navigate("/");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Nu am putut crea contul");
     } finally {
@@ -209,7 +236,6 @@ function RegisterForm() {
   }
 
   async function handleResendCode() {
-    const NGROK_HEADERS = { "ngrok-skip-browser-warning": "true" };
     setError(null);
     setLoading(true);
     try {
@@ -232,9 +258,7 @@ function RegisterForm() {
         {([1, 2, 3] as RegisterStep[]).map((s) => (
           <li
             key={s}
-            className={`auth-step ${
-              s === step ? "current" : s < step ? "done" : ""
-            }`}
+            className={`auth-step ${s === step ? "current" : s < step ? "done" : ""}`}
           >
             <span className="auth-step-dot">{s < step ? "✓" : s}</span>
             <span className="auth-step-label">{STEP_LABELS[s]}</span>
@@ -341,5 +365,160 @@ function RegisterForm() {
         </form>
       )}
     </div>
+  );
+}
+
+function ResetPasswordForm({ onDone }: { onDone: () => void }) {
+  const [step, setStep] = useState<ResetStep>(1);
+  const [email, setEmail] = useState("");
+  const [code, setCode] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState(false);
+
+  async function handleRequestCode(e: FormEvent) {
+    e.preventDefault();
+    setError(null);
+    setLoading(true);
+    try {
+      const res = await fetch(`${API_URL}/api/auth/forgot-password`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", ...NGROK_HEADERS },
+        body: JSON.stringify({ email }),
+      });
+
+      if (!res.ok) throw new Error("Nu am putut trimite codul de resetare");
+
+      setStep(2);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Eroare la trimiterea codului");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleResetPassword(e: FormEvent) {
+    e.preventDefault();
+    setError(null);
+
+    if (newPassword !== confirmPassword) {
+      setError("Parolele nu coincid");
+      return;
+    }
+    if (newPassword.length < 8) {
+      setError("Parola trebuie să aibă minim 8 caractere");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const res = await fetch(`${API_URL}/api/auth/reset-password`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", ...NGROK_HEADERS },
+        body: JSON.stringify({ email, code, newPassword }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => null);
+        throw new Error(data?.message ?? "Nu am putut reseta parola");
+      }
+
+      setSuccess(true);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Eroare la resetarea parolei");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  if (success) {
+    return (
+      <div className="auth-form">
+        <p className="auth-hint">
+          Parola a fost schimbată cu succes. Te poți autentifica din nou.
+        </p>
+        <button type="button" className="auth-submit" onClick={onDone}>
+          Înapoi la autentificare
+        </button>
+      </div>
+    );
+  }
+
+  if (step === 1) {
+    return (
+      <form className="auth-form" onSubmit={handleRequestCode}>
+        <p className="auth-hint">
+          Introdu adresa de email asociată contului — îți trimitem un cod de resetare.
+        </p>
+
+        <label className="auth-field">
+          <span>Email</span>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="nume@exemplu.com"
+            required
+          />
+        </label>
+
+        {error && <p className="auth-error">{error}</p>}
+
+        <button type="submit" className="auth-submit" disabled={loading}>
+          {loading ? "Se trimite..." : "Trimite cod de resetare"}
+        </button>
+      </form>
+    );
+  }
+
+  return (
+    <form className="auth-form" onSubmit={handleResetPassword}>
+      <p className="auth-hint">
+        Am trimis un cod la <strong>{email}</strong>
+      </p>
+
+      <label className="auth-field">
+        <span>Cod de verificare</span>
+        <input
+          type="text"
+          inputMode="numeric"
+          maxLength={6}
+          value={code}
+          onChange={(e) => setCode(e.target.value)}
+          placeholder="000000"
+          required
+        />
+      </label>
+
+      <label className="auth-field">
+        <span>Parolă nouă</span>
+        <input
+          type="password"
+          value={newPassword}
+          onChange={(e) => setNewPassword(e.target.value)}
+          placeholder="minim 8 caractere"
+          required
+        />
+      </label>
+
+      <label className="auth-field">
+        <span>Confirmă parola nouă</span>
+        <input
+          type="password"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+          placeholder="••••••••"
+          required
+        />
+      </label>
+
+      {error && <p className="auth-error">{error}</p>}
+
+      <button type="submit" className="auth-submit" disabled={loading}>
+        {loading ? "Se resetează..." : "Resetează parola"}
+      </button>
+    </form>
   );
 }
