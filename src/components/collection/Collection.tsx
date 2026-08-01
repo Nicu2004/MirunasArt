@@ -36,8 +36,8 @@ export default function Collection() {
   return (
     <section id="collection" className="collection-section">
       <div className="collection-heading">
-        <span className="collection-eyebrow">The Collection</span>
-        <h2 className="collection-title">Works on View</h2>
+        <span className="collection-eyebrow">Colecția</span>
+        <h2 className="collection-title">Lucrări expuse</h2>
         <div className="collection-rule" />
       </div>
 

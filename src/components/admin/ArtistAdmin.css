@@ -1,0 +1,66 @@
+.artist-admin__form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-width: 480px;
+}
+
+.artist-admin__form label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-family: "Inter", sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #6b6b63;
+}
+
+.artist-admin__form input,
+.artist-admin__form textarea {
+  font-family: "Inter", sans-serif;
+  font-size: 13.5px;
+  padding: 9px 12px;
+  border: 1px solid rgba(43, 43, 41, 0.15);
+  border-radius: 4px;
+  color: #2b2b29;
+  background-color: #fff;
+  color-scheme: light;
+  resize: vertical;
+}
+
+.artist-admin__form input:focus,
+.artist-admin__form textarea:focus {
+  outline: none;
+  border-color: #c9a35c;
+}
+
+.artist-admin__error {
+  color: #a4453a;
+  font-size: 13px;
+}
+
+.artist-admin__success {
+  color: #3b6d11;
+  font-size: 13px;
+}
+
+.artist-admin__submit {
+  align-self: flex-start;
+  font-family: "Inter", sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: #fff;
+  background: #c9a35c;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  cursor: pointer;
+  margin-top: 4px;
+}
+
+.artist-admin__submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

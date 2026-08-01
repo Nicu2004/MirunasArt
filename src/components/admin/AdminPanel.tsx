@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import {
   Inbox,
@@ -21,6 +20,7 @@ import Invoices from "./Invoices";
 import ProductsAdmin from "./Productsadmin";
 import ArtworkUpload from "./ArtworkImageUpload"
 import ExhibitionAdministration from './ExhibitionAdminsitration'
+import ArtistAdmin from "./ArtistAdmin.tsx"
 import "./AdminPanel.css";
 
 type View =
@@ -69,7 +69,6 @@ export default function AdminPanel() {
           </button>
         ))}
 
-        {/* Administrare Site — item expandabil, cu sub-secțiuni */}
         <button
           className={`admin-nav-item ${isSiteView ? "active" : ""}`}
           onClick={() => setSiteMenuOpen((open) => !open)}
@@ -112,13 +111,7 @@ export default function AdminPanel() {
         {view === "uploadWidget" && <ArtworkUpload/>}
         {view === "site-products" && <ProductsAdmin />}
         {view === "site-exhibitions" && <ExhibitionAdministration/>}
-
-        {view === "site-artist" && (
-          <p className="admin-status">
-            Administrare secțiune artist — în lucru, trimite fișierele
-            ArtistSection ca să o construim.
-          </p>
-        )}
+        {view === "site-artist" && <ArtistAdmin />}
       </div>
     </div>
   );

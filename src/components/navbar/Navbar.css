@@ -145,6 +145,113 @@
   background: rgba(255, 255, 255, 0.04);
 }
 
+/* Logout — icon-only ghost button, aceeași familie vizuală ca .av-login */
+.av-logout-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  background: none;
+  border: 1px solid transparent;
+  border-radius: 2px;
+  color: var(--av-ivory-dim);
+  cursor: pointer;
+  transition: color 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+}
+
+.av-logout-btn:hover {
+  color: var(--av-gold);
+  border-color: var(--av-border);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.av-mobile-logout {
+  width: 100%;
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--av-border);
+  cursor: pointer;
+  text-align: left;
+}
+
+/* Dropdown de profil, pe hover */
+
+.av-profile-dropdown {
+  position: relative;
+}
+
+.av-profile-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 8px;
+  min-width: 200px;
+  background: rgba(13, 12, 16, 0.96);
+  backdrop-filter: blur(16px) saturate(140%);
+  border: 1px solid var(--av-border);
+  border-radius: 4px;
+  padding: 6px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-4px);
+  transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s;
+  z-index: 200;
+}
+
+/* zonă invizibilă de "punte" între buton și meniu, ca hover-ul să nu se
+   piardă în golul de 8px dintre ele */
+.av-profile-dropdown::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  height: 8px;
+}
+
+.av-profile-dropdown:hover .av-profile-menu,
+.av-profile-dropdown:focus-within .av-profile-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.av-profile-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  background: none;
+  border: none;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  color: var(--av-ivory-dim);
+  text-decoration: none;
+  padding: 9px 12px;
+  border-radius: 3px;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.av-profile-menu-item:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--av-ivory);
+}
+
+.av-profile-menu-item--logout {
+  border-top: 1px solid var(--av-border);
+  margin-top: 4px;
+  padding-top: 12px;
+  color: rgba(212, 130, 110, 0.9);
+}
+
+.av-profile-menu-item--logout:hover {
+  color: #d4826e;
+  background: rgba(212, 130, 110, 0.08);
+}
+
 /* CTA */
 
 .av-cta {
