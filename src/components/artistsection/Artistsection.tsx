@@ -12,12 +12,12 @@ interface SocialLink {
   icon: ComponentType<SVGProps<SVGSVGElement>>;
 }
 
-// Poza rămâne fixă, cum ai cerut — schema Artist nu are câmp de portret.
+
 const PORTRAIT_URL = "/images/artist-profile.jpg";
 
 const SOCIAL_LINKS: SocialLink[] = [
-  { label: "Instagram", href: "https://instagram.com/username", icon: InstagramIcon },
-  { label: "Facebook", href: "https://facebook.com/username", icon: FacebookIcon },
+  { label: "Instagram", href: "https://www.instagram.com/miruna.anton.art/", icon: InstagramIcon },
+  { label: "Facebook", href: "https://www.facebook.com/miruna.anton1", icon: FacebookIcon },
 ];
 
 export default function ArtistSection() {
@@ -30,8 +30,7 @@ export default function ArtistSection() {
   useEffect(() => {
     (async () => {
       try {
-        // fetch simplu, NU authFetch — ruta /api/artist e publică,
-        // fără requireAuth pe backend
+   
         const res = await fetch(`${API_URL}/api/artist`, {
           headers: NGROK_HEADERS,
         });

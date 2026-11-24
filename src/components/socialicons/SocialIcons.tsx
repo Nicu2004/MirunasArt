@@ -1,9 +1,5 @@
 import type { SVGProps } from "react";
 
-// lucide-react 1.0 a eliminat iconițele de brand (Instagram, Facebook etc.)
-// din motive de trademark, deci le definim ca SVG-uri proprii, minimale,
-// în același stil "outline" ca restul iconițelor lucide din proiect.
-
 export function InstagramIcon(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
